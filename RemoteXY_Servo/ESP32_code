@@ -79,8 +79,8 @@ void loop()
 { 
   RemoteXY_Handler ();
   if (RemoteXY.LED1==1){
-    int var = RemoteXY.slider1;
-    RemoteXY.dial = RemoteXY.slider1;
+   int var = 80 + (RemoteXY.slider1);
+    RemoteXY.dial = var;
     myservo.write(var);
   }
   RemoteXY_delay(100);
