@@ -1,1 +1,48 @@
-j
+
+#define BLYNK_PRINT Serial
+
+/* Fill in information from Blynk Device Info here */
+#define BLYNK_TEMPLATE_ID "xxxxxxx"
+#define BLYNK_TEMPLATE_NAME "xxxxxxx"
+#define BLYNK_AUTH_TOKEN "xxxxxxx"
+
+#define TRIGGER_PIN  22  
+#define ECHO_PIN     23  
+#define MAX_DISTANCE 100
+
+#include <NewPing.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+BlynkTimer timer;
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+char ssid[] = "";
+char pass[] = "";
+
+
+void myTimerEvent()     // a timer setup for writing data on to the Blynk platform
+{
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  Blynk.virtualWrite(V1,sonar.ping_cm());//just an example
+  Serial.print("Ping: ");
+  Serial.print(sonar.ping_cm()); 
+  Serial.println("cm");
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+  timer.setInterval(500L, myTimerEvent);
+}
+
+void loop()
+{
+  Blynk.run();
+  timer.run(); 
+}
+
+
