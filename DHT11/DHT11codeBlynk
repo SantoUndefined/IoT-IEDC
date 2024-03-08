@@ -1,0 +1,51 @@
+
+#define BLYNK_PRINT Serial
+
+/* Fill in information from Blynk Device Info here */
+#define BLYNK_TEMPLATE_ID "xxxxxxxxxxxxxx"
+#define BLYNK_TEMPLATE_NAME "xxxxxxxxx"
+#define BLYNK_AUTH_TOKEN "xxxxxxxxxxxxxx"
+
+#define DHTPIN 23
+#define DHTTYPE DHT11
+
+#include "DHT.h"
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+BlynkTimer timer;
+DHT dht(DHTPIN, DHTTYPE);
+
+char ssid[] = "";
+char pass[] = "";
+
+
+void myTimerEvent()     // a timer setup for writing data on to the Blynk platform
+{
+  // You can send any value at any time.
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  float f = dht.readTemperature(true);
+  Blynk.virtualWrite(V1,t);//just an example
+  Blynk.virtualWrite(V2,f);
+  Blynk.virtualWrite(V3,h);
+  Serial.print(t);
+  Serial.print(f);
+  Serial.print(h);
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+  timer.setInterval(500L, myTimerEvent);
+  dht.begin();
+}
+
+void loop()
+{
+  Blynk.run();
+  timer.run(); 
+}
+
